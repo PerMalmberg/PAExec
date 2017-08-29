@@ -214,6 +214,7 @@ CommandList gSupportedCommands[] =
 	{L"to", true, true},
 	{L"noname", false, false},
 	{L"sname", true, true},
+    {L"domain", true, true},
 	{L"accepteula", false, false} //non-documented PSExec command that we'll just silently eat
 };
 
@@ -480,7 +481,7 @@ bool ParseCommandLine(Settings& settings, LPCWSTR cmdLine)
 					return false;
 			}
 		}
-
+        
 		if(cmdParser.HasKey(L"s"))
 		{
 			//It IS OK to use -u and -s (-u connects to server, then app is launched as -s)
@@ -571,6 +572,11 @@ bool ParseCommandLine(Settings& settings, LPCWSTR cmdLine)
 			tmp.UnlockBuffer();
 			settings.srcDir = (LPCWSTR)tmp; //store folder
 		}
+
+        if (cmdParser.HasVal(L"domain"))
+        {
+            settings.domain = cmdParser.GetVal(L"domain");
+        }
 
 		if(cmdParser.HasKey(L"clist"))
 		{

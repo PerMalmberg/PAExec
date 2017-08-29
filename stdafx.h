@@ -305,6 +305,7 @@ public:
 	bool bRunLimited;
 	CString password;
 	CString user;
+    CString domain;
 	bool bUseSystemAccount;
 	CString workingDir;
 	bool bShowUIOnWinLogon;

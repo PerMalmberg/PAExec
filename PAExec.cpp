@@ -29,18 +29,6 @@ void RegressionTests();
 BOOL WINAPI ConsoleCtrlHandler(DWORD dwCtrlType);
 bool CheckTimeout(__time64_t start, LPCWSTR serverName, Settings& settings);
 
-#ifdef _DEBUG
-bool bWaited = false;
-void WaitSomewhere()
-{
-	if(bWaited)
-		return;
-	bWaited = true;
-	wprintf(L"\r\nDEBUG: Waiting for key press\r\n");
-	_getch();
-}
-#endif
-
 int wmain(int argc, wchar_t* argv[], wchar_t* envp[])
 {
 	int exitCode = 0;
@@ -88,7 +76,7 @@ int wmain(int argc, wchar_t* argv[], wchar_t* envp[])
 		PrintCopyright();
 
 #ifdef _DEBUG
-		RegressionTests();
+	//	RegressionTests();
 #endif
 
 		if(ParseCommandLine(settings, ::GetCommandLine()))
@@ -285,10 +273,6 @@ Exit:
 
 	if(bPrintExitCode)
 		Log(StrFormat(L"\r\nPAExec returning exit code %d\r\n", exitCode), false);
-
-#ifdef _DEBUG
-	WaitSomewhere();
-#endif
 
 	return exitCode;
 }

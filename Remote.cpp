@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "PAExec.h"
 #include <process.h>
+#include "ImpersonationScope.h"
 
 
 volatile long gInProcessRequests = 0;
@@ -252,6 +253,8 @@ bool InstallAndStartRemoteService(LPCWSTR remoteServer, Settings& settings)
 {
 	if(0 == wcscmp(remoteServer, L"."))
 		remoteServer = NULL;
+
+    ImpersonationScope imp(settings, settings.user, settings.domain, settings.password, L"InstallAndStartRemoteService");
 
 	SC_HANDLE hSCM = ::OpenSCManager(remoteServer, NULL, SC_MANAGER_ALL_ACCESS);
 	DWORD gle = GetLastError();

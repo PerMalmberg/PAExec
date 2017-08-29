@@ -15,7 +15,7 @@
 #include <Sddl.h>
 #include <Psapi.h>
 #include <WtsApi32.h>
-
+#include "ImpersonationScope.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -121,13 +121,15 @@ bool GetUserHandle(Settings& settings, BOOL& bLoadedProfile, PROFILEINFO& profil
 		{
 			CString user, domain;
 			GetUserDomain(settings.user, user, domain);
+			//BOOL bLoggedIn = LogonUser(user, domain.IsEmpty() ? NULL : domain, settings.password, LOGON32_LOGON_INTERACTIVE, LOGON32_PROVIDER_WINNT50, &settings.hUser);
 
-			BOOL bLoggedIn = LogonUser(user, domain.IsEmpty() ? NULL : domain, settings.password, LOGON32_LOGON_INTERACTIVE, LOGON32_PROVIDER_WINNT50, &settings.hUser);
+            ImpersonationScope imp(settings, user, domain, settings.password, L"GetUserHandle");
+
 			gle = GetLastError();
 #ifdef _DEBUG
 			Log(L"DEBUG: LogonUser", gle);
 #endif
-			if((FALSE == bLoggedIn) || BAD_HANDLE(settings.hUser))
+			if(!imp || BAD_HANDLE(settings.hUser))
 			{
 				Log(StrFormat(L"Error logging in as %s", settings.user), gle);
 				return false;
